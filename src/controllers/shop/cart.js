@@ -1,23 +1,54 @@
-const Product = require('../../model/cart');
-exports.addToCart = (req, res, next) => {
-  Product.getProductDetailsByIds(req.body.cartproduct, () => {
-    res.redirect('/');
+const Cart = require('../../model/cart');
+const Product = require('../../model/product');
+
+exports.getAllProducts = (req, res, next) => {
+  Product.fetchAll((products) => {
+    Cart.fetchAll((cartProducts) => {
+      let formattedProducts = products.filter(({ id }) =>
+        cartProducts.map(({ id }) => id).includes(id)
+      );
+      formattedProducts = formattedProducts.map((p) => ({
+        ...p,
+        qty: cartProducts.find(({ id }) => id === p.id).qty,
+      }));
+
+      let totalPrice = 0;
+      cartProducts.map((cartProduct) => {
+        const currentValue = cartProduct.price * cartProduct.qty;
+        totalPrice = totalPrice + currentValue;
+      });
+
+      res.render('shop/cart', {
+        pageTitle: 'cart',
+        products: formattedProducts,
+        activeLink: '/',
+        totalPrice,
+      });
+    });
   });
 };
-exports.getProductId = (req, res, next) => {
-  console.log('fileContent:-');
-  let addToCart = false;
-  Product.getAllProducts((fileContent) => {
-    console.log('fileContent:-', fileContent);
-  });
-  if (req.params.productID) {
-    addToCart = true;
-  }
-  if (addToCart) {
-    return res.render('shop/shop', {
-      pagetitle: 'Home',
-      activelink: '/',
-      isaddToCart: false,
+
+exports.editCart = (req, res, next) => {
+  const productID = req.body.productID;
+  Product.getProductDetailById(productID, (productDetails) => {
+    Cart.addToCart(productDetails, () => {
+      res.redirect(`/`);
     });
-  }
+  });
+};
+
+exports.updateCart = (req, res, next) => {
+  const productID = req.body.productID;
+  const isAdd = +req.body.isAdd;
+  Cart.updateCart(productID, isAdd, () => {
+    res.redirect(`/cart`);
+  });
+};
+
+exports.removeFromCart = (req, res, next) => {
+  const productID = req.body.productID;
+  // console.log('removeFromCart', productID);
+
+  Cart._removeFromCart(productID, () => {});
+  res.redirect(`/`);
 };

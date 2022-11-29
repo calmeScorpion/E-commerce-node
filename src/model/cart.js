@@ -1,34 +1,103 @@
 const fs = require('fs');
+
 const path = require('path');
-const appDirName = require('../utils/path');
 
-const productFilepath = path.join(appDirName, 'data', 'cart.json');
+const appRootDir = require('../utils/path');
 
-module.exports = class Product {
-  static getProductDetailsByIds(productID, cb) {
-    var data = fs.readFileSync(productFilepath);
-    var myObject = JSON.parse(data);
-    myObject.push(productID);
-    var newData = JSON.stringify(myObject);
-    fs.writeFile(productFilepath, newData, (err) => {
-      if (err) throw err;
-      cb();
-      console.log('Item added to Cart');
-    });
-  }
-  static getDetailsById(productID, cb) {
-    getAllProducts((products) => {
-      const detailData = products.find(({ id }) => id === productID);
-      cb(detailData);
-    });
-  }
-};
-exports.getAllProducts = (cb) => {
-  fs.readFile(productFilepath, (err, fileContent) => {
+
+const cartFilePath = path.join(appRootDir, 'data', 'cart.json');
+
+const getAllCartPoducts = (cb) => {
+  fs.readFile(cartFilePath, (err, fileContent) => {
     if (err) {
       return cb([]);
     }
-    console.log('file:-', fileContent);
     return cb(JSON.parse(fileContent));
   });
+};
+
+module.exports = class Cart {
+  constructor(id, price) {
+    this.id = id;
+    this.price = price;
+  }
+
+  static updateCart(productID, isAdd, cb) {
+    // get all cart products
+    // find specific product
+
+    getAllCartPoducts((products) => {
+      const data = products
+        .map((product) => ({
+          ...product,
+          qty:
+            product.id === productID
+              ? isAdd
+                ? product.qty + 1
+                : product.qty - 1
+              : product.qty,
+        }))
+        .filter(({ qty }) => qty > 0);
+      fs.writeFile(cartFilePath, JSON.stringify(data), (err) => {
+        if (!err) {
+          cb();
+        }
+      });
+    });
+  }
+
+  static _removeFromCart(productID, cb) {
+    getAllCartPoducts((products) => {
+      console.log('products', products);
+      products = products.filter(({ id }) => id !== productID);
+      console.log('products', products);
+      fs.writeFile(cartFilePath, JSON.stringify(products), (err) => {
+        if (!err) {
+          cb();
+        }
+      });
+    });
+  }
+  static addToCart(prductDetails, cb) {
+    getAllCartPoducts((products) => {
+      // if product exist
+      const isExist =
+        products.filter(({ id }) => id === prductDetails.id).length > 0;
+      if (isExist) {
+        products = products.map((product) => {
+          return {
+            ...product,
+            qty:
+              product.id === prductDetails.id ? product.qty + 1 : product.qty,
+          };
+        });
+      } else {
+        products.push({
+          id: prductDetails.id,
+          price: prductDetails.price,
+          qty: 1,
+        });
+      }
+
+      fs.writeFile(cartFilePath, JSON.stringify(products), (err) => {
+        //console.log('ADD ERROR', err);
+        if (!err) {
+          cb();
+        }
+      });
+    });
+  }
+
+  static removeFromCart(ID, price) {
+    getAllCartPoducts((products) => {
+      products = products.filter((id) => id !== ID);
+      fs.writeFile(cartFilePath, JSON.stringify(products), (err) => {
+        //console.log('UPDATE ERROR', err);
+      });
+    });
+  }
+
+  static fetchAll(cb) {
+    getAllCartPoducts(cb);
+  }
 };

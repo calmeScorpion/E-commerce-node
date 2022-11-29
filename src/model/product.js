@@ -1,11 +1,17 @@
+// const products = [];
+
 const fs = require('fs');
+
 const path = require('path');
-const appDirName = require('../utils/path');
 
-const productFilepath = path.join(appDirName, 'data', 'db.json');
+const appRootDir = require('../utils/path');
 
-const getAllProducts = (cb) => {
-  fs.readFile(productFilepath, (err, fileContent) => {
+const pdtFilePath = path.join(appRootDir, 'data', 'db.json');
+
+const wishlistFilePath = path.join(appRootDir, 'data', 'wishlist.json');
+
+const getALLProducts = (cb) => {
+  fs.readFile(pdtFilePath, (err, fileContent) => {
     if (err) {
       return cb([]);
     }
@@ -15,50 +21,50 @@ const getAllProducts = (cb) => {
 
 module.exports = class Product {
   constructor(id, title, price, image, description) {
-    (this.id = id),
-      (this.title = title),
-      (this.price = price),
-      (this.image = image),
-      (this.description = description);
+    this.id = id;
+    this.title = title;
+    this.price = price;
+    this.image = image;
+    this.description = description;
   }
-
+ 
   save(cb) {
-    getAllProducts((products) => {
+    getALLProducts((products) => {
       products.push(this);
-
-      fs.writeFile(productFilepath, JSON.stringify(products), (err) => {
+      fs.writeFile(pdtFilePath, JSON.stringify(products), (err) => {
         if (!err) {
           return cb();
         }
-        console.log(err);
+        console.log('ERROR', err);
       });
     });
   }
 
   update(cb) {
-    getAllProducts((products) => {
+    getALLProducts((products) => {
       products = products.map((product) => {
         if (product.id !== this.id) {
           return product;
         }
         return this;
       });
-      fs.writeFile(productFilepath, JSON.stringify(products), (err) => {
+      fs.writeFile(pdtFilePath, JSON.stringify(products), (err) => {
         if (!err) {
           return cb();
         }
+        console.log('ERROR', err);
       });
     });
   }
 
-  static getProductDetailsById(productID, cb) {
-    getAllProducts((products) => {
-      const productData = products.find(({ id }) => id === productID);
+  static getProductDetailById(productID, cb) {
+    getALLProducts((product) => {
+      const productData = product.find(({ id }) => id === productID);
       cb(productData);
     });
   }
 
   static fetchAll(cb) {
-    getAllProducts(cb);
+    getALLProducts(cb);
   }
 };

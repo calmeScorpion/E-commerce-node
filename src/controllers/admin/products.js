@@ -1,29 +1,31 @@
-const { v1: uuidv1 } = require('uuid');
 const Product = require('../../model/product');
 
-exports.getEditproductPage = (req, res, next) => {
-  let editMode = false;
+const { v1: uuidv1 } = require('uuid');
+
+exports.getEditProductPage = (req, res, next) => {
+  let isEditable = false;
   if (req.params.productID) {
-    editMode = true;
+    isEditable = true;
   }
-  if (!editMode) {
-    return res.render('admin/editproduct', {
-      pagetitle: 'Add product',
-      activelink: '/admin/editproduct',
-      iseditMode: false,
-      id: req.params.productID,
+  if (!isEditable) {
+    return res.render('admin/edit-product', {
+      pageTitle: 'Add Product',
+      activeLink: 'admin/edit-product',
+      isEditable: false,
     });
   }
-  Product.getProductDetailsById(req.params.productID, (productData) => {
-    res.render('admin/editproduct', {
-      pagetitle: 'Add product',
-      activelink: '/admin/editproduct',
-      productData: productData,
-      iseditMode: true,
+
+  Product.getProductDetailById(req.params.productID, (productData) => {
+    return res.render('admin/edit-product', {
+      pageTitle: 'Edit Product',
+      activeLink: 'admin/edit-product',
+      productData,
+      isEditable: true,
     });
   });
 };
-exports.AddProduct = (req, res, next) => {
+
+exports.editProduct = (req, res, next) => {
   const { productId, title, price, image, description } = req.body;
   const product = new Product(
     productId ? productId : uuidv1(),
@@ -32,6 +34,7 @@ exports.AddProduct = (req, res, next) => {
     image,
     description
   );
+
   if (productId) {
     product.update(() => {
       res.redirect('/admin/products');
@@ -43,12 +46,12 @@ exports.AddProduct = (req, res, next) => {
   }
 };
 
-exports.getAllProduct = (req, res, next) => {
-  Product.fetchAll((products) => {
+exports.getAllProducts = (req, res, next) => {
+  Product.fetchAll((pdt) => {
     res.render('admin/list', {
-      pagetitle: 'List page',
-      products: products,
-      activelink: '/admin/products',
+      pageTitle: 'Admin List',
+      products: pdt,
+      activeLink: '/admin/list',
     });
   });
 };
