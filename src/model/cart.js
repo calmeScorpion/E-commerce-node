@@ -4,7 +4,6 @@ const path = require('path');
 
 const appRootDir = require('../utils/path');
 
-
 const cartFilePath = path.join(appRootDir, 'data', 'cart.json');
 
 const getAllCartPoducts = (cb) => {
@@ -23,8 +22,6 @@ module.exports = class Cart {
   }
 
   static updateCart(productID, isAdd, cb) {
-    // get all cart products
-    // find specific product
 
     getAllCartPoducts((products) => {
       const data = products
@@ -80,19 +77,9 @@ module.exports = class Cart {
       }
 
       fs.writeFile(cartFilePath, JSON.stringify(products), (err) => {
-        //console.log('ADD ERROR', err);
         if (!err) {
           cb();
         }
-      });
-    });
-  }
-
-  static removeFromCart(ID, price) {
-    getAllCartPoducts((products) => {
-      products = products.filter((id) => id !== ID);
-      fs.writeFile(cartFilePath, JSON.stringify(products), (err) => {
-        //console.log('UPDATE ERROR', err);
       });
     });
   }

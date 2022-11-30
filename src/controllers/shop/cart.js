@@ -1,5 +1,6 @@
 const Cart = require('../../model/cart');
 const Product = require('../../model/product');
+const Model = require('../../model/wishlist');
 
 exports.getAllProducts = (req, res, next) => {
   Product.fetchAll((products) => {
@@ -12,17 +13,11 @@ exports.getAllProducts = (req, res, next) => {
         qty: cartProducts.find(({ id }) => id === p.id).qty,
       }));
 
-      let totalPrice = 0;
-      cartProducts.map((cartProduct) => {
-        const currentValue = cartProduct.price * cartProduct.qty;
-        totalPrice = totalPrice + currentValue;
-      });
-
       res.render('shop/cart', {
         pageTitle: 'cart',
         products: formattedProducts,
-        activeLink: '/',
-        totalPrice,
+        activeLink: '/cart',
+        productslength: cartProducts.length,
       });
     });
   });
@@ -32,7 +27,7 @@ exports.editCart = (req, res, next) => {
   const productID = req.body.productID;
   Product.getProductDetailById(productID, (productDetails) => {
     Cart.addToCart(productDetails, () => {
-      res.redirect(`/`);
+      res.redirect(`/products/${productID}`);
     });
   });
 };
@@ -47,8 +42,6 @@ exports.updateCart = (req, res, next) => {
 
 exports.removeFromCart = (req, res, next) => {
   const productID = req.body.productID;
-  // console.log('removeFromCart', productID);
-
   Cart._removeFromCart(productID, () => {});
-  res.redirect(`/`);
+  res.redirect(`/products/${productID}`);
 };

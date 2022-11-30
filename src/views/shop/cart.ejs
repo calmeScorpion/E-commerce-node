@@ -8,6 +8,7 @@
 <body>
    <%- include('../partials/nav.ejs') %>
     <main class="container">
+    <%let a=0;%>
  <% if(products.length === 0){ %>
 
     <h1>YOUR CART IS EMPTY.... </h1>
@@ -26,6 +27,7 @@
                      
 
  <% products.forEach(function(product){  %>
+ <%a=a+(product.price*product.qty);%>
 <div class="productcontainer">
      <div class="containerRow ">
          <div class="subdiv"><img class="productImage" src="<%= product.image %>"></div>
@@ -68,7 +70,7 @@
                     <div><h5><b>Summary</b></h5></div>
                      <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
                         <div class="col">TOTAL PRICE</div>
-                        <div class="col text-right"><span class="total"><%= totalPrice %> </span> </div>
+                        <div class="col text-right"><span class="total"><%=parseInt(a)%></span> </div>
                     </div>
                     <button class="btn">CHECKOUT</button>
                 </div>

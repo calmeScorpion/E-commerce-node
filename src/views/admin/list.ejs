@@ -14,7 +14,7 @@
      <% } else{ %>
   
       <p>List of all the products...</p>
-<div class="main-div">
+    <div class="main-div">
       <% products.forEach(function(product){  %>
       <div class="grids">
         <article class="card product-item">
@@ -24,7 +24,6 @@
           <div class="card__image">
             <img
               src="<%= product.image %>"
-              alt="A Book"
             />
           </div>
           <div class="card__content">

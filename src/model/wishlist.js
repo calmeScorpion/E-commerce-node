@@ -6,7 +6,7 @@ const appRootDir = require('../utils/path');
 
 const wishlistFilePath = path.join(appRootDir, 'data', 'wishlist.json');
 
-const getAllWishlist = (cb) => {
+const getAllCartPoducts = (cb) => {
   fs.readFile(wishlistFilePath, (err, fileContent) => {
     if (err) {
       return cb([]);
@@ -14,38 +14,35 @@ const getAllWishlist = (cb) => {
     return cb(JSON.parse(fileContent));
   });
 };
-
-module.exports = class Whishlist {
+module.exports = class Cart {
   constructor(id) {
     this.id = id;
   }
+  static _removeFromCart(productID, cb) {
+    getAllCartPoducts((products) => {
+      products = products.filter(({ id }) => id !== productID);
 
-  save(cb) {
-    getAllWishlist((products) => {
-      products.push(this.id);
       fs.writeFile(wishlistFilePath, JSON.stringify(products), (err) => {
         if (!err) {
-          return cb();
+          cb();
         }
-        console.log('ERROR', err);
       });
     });
   }
+  static addToCart(prductDetails, cb) {
+    getAllCartPoducts((products) => {
+      products.push({
+        id: prductDetails.id,
+      });
 
-  update(cb) {
-    getAllWishlist((products) => {
-      products = products.filter((id) => id !== this.id);
-      console.log(products);
       fs.writeFile(wishlistFilePath, JSON.stringify(products), (err) => {
         if (!err) {
-          return cb();
+          cb();
         }
-        console.log('ERROR', err);
       });
     });
   }
-
   static fetchAll(cb) {
-    getAllWishlist(cb);
+    getAllCartPoducts(cb);
   }
 };

@@ -1,5 +1,3 @@
-// const products = [];
-
 const fs = require('fs');
 
 const path = require('path');
@@ -7,8 +5,6 @@ const path = require('path');
 const appRootDir = require('../utils/path');
 
 const pdtFilePath = path.join(appRootDir, 'data', 'db.json');
-
-const wishlistFilePath = path.join(appRootDir, 'data', 'wishlist.json');
 
 const getALLProducts = (cb) => {
   fs.readFile(pdtFilePath, (err, fileContent) => {
@@ -27,7 +23,7 @@ module.exports = class Product {
     this.image = image;
     this.description = description;
   }
- 
+
   save(cb) {
     getALLProducts((products) => {
       products.push(this);

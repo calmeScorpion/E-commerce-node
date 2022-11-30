@@ -30,7 +30,7 @@
         <% if(isEditable){ %>
         <input type="hidden" name="productId" value="<%= productData.id %>" />
         <% } %>
-        <button class="btn" type="submit"> <%= isEditable ? 'Update Product' :'Add Product' %></button>
+        <button class="btn" type="submit"> <%= isEditable ? 'Edit Product' :'Add Product' %></button>
       </form>
     </main>
  <%- include('../partials/end.ejs') %>

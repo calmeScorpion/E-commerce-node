@@ -14,7 +14,7 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(express.static(path.resolve(dirName, 'public'))); //css
+app.use(express.static(path.resolve(dirName, 'public')));
 
 app.set('view engine', 'ejs');
 
@@ -31,6 +31,6 @@ app.use((req, res, next) => {
   });
 });
 
-app.listen(3001, () => {
-  console.log('App started on port 3001');
+app.listen(7000, () => {
+  console.log('App running...');
 });

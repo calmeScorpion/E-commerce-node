@@ -18,21 +18,21 @@
       <p><%= productData.description %></p>
 
      
-
-      <form method="POST" action="/products/<%= productData.id %>">
-
-        <% if(isIncluded){ %>
-          <input type="hidden" name="productId" value="<%= productData.id %>" />
-          <% } %>
-          
-        <button class="btn"> <%= isIncluded ? 'Remove from Wishlist' :'Add to Wishlist' %> </button>
-      </form>
-      <div>
-        <form method="POST" action="/products/<%= productData.id %>">
-
-      <button class="btn">Add to Cart</button>
-      </form>
-      <button class="btn">Buy Now</button>
+  <div class="card__actions">
+     <form method="POST" action="<%= isInWishlist ? '/remove-from-wishlist' : '/add-to-wishlist' %>">
+              <input type="hidden" name="productID" value="<%= productData.id %>">
+              <button class="btn"> <%= isInWishlist ? 'Remove From Wishlist' : 'Add to Wishlist ' %></button>
+</form>
+<form method="POST" action="<%= iscart ? '/remove-from-cart' : '/add-to-cart' %>">
+              <input type="hidden" name="productID" value="<%= productData.id %>">
+              <button class="btn"> <%= iscart ? 'Remove From Cart' : 'Add to Cart ' %></button>
+             </form>
+ <div>
+ <div class="back-to-shop mt-5">
+            <a href="/">&leftarrow;
+              <span>Back to shop</span>
+            </a>
+          </div>
       </div>
     </div>
   </div>
