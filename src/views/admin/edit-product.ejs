@@ -27,6 +27,7 @@
           <label for="image">Description</label>
           <textarea name="description" id="description"><%= isEditable ? productData.description :'' %></textarea>
         </div>
+        
         <% if(isEditable){ %>
         <input type="hidden" name="productId" value="<%= productData.id %>" />
         <% } %>

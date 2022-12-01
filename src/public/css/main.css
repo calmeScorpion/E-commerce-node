@@ -73,6 +73,12 @@ main {
 .card__content {
   padding: 1rem;
 }
+.subdiv {
+  width : 25%;
+  padding: 0 1vh;
+  padding-top: 15px;
+  display: flex;
+}
 
 .card__header h1,
 .card__content h1,

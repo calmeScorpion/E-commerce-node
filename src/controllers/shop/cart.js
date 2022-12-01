@@ -27,7 +27,11 @@ exports.editCart = (req, res, next) => {
   const productID = req.body.productID;
   Product.getProductDetailById(productID, (productDetails) => {
     Cart.addToCart(productDetails, () => {
-      res.redirect(`/products/${productID}`);
+      if (req.body.submit === 'add') {
+        res.redirect('/wishlist');
+      } else {
+        res.redirect(`/products/${productID}`);
+      }
     });
   });
 };

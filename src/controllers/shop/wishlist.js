@@ -14,7 +14,11 @@ exports.editWishlist = (req, res, next) => {
 exports.removeFromWishlist = (req, res, next) => {
   const productID = req.body.productID;
   Wishlist._removeFromCart(productID, () => {});
-  res.redirect(`/products/${productID}`);
+  if (req.body.submit === 'remove') {
+    res.redirect('/wishlist');
+  } else {
+    res.redirect(`/products/${productID}`);
+  }
 };
 
 exports.getViewProductPage = (req, res, next) => {
@@ -51,6 +55,10 @@ exports.getAllProducts = (req, res, next) => {
           products: formattedProducts,
           activeLink: '/wishlist',
           productslength: idss.length,
+          iscart:
+            idss.filter(({ id }) =>
+              cartProducts.map(({ id }) => id).includes(id)
+            ).length > 0,
         });
       });
     });

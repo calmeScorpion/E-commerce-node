@@ -40,6 +40,7 @@ exports.editProduct = (req, res, next) => {
     description
   );
 
+
   if (productId) {
     product.update(() => {
       res.redirect('/admin/products');

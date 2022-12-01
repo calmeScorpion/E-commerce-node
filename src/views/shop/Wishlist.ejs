@@ -34,7 +34,15 @@
             <div class="subdiv">
               <form class="qform" method="POST" action="/remove-from-wishlist">
               <input type="hidden" name="productID" value="<%= product.id %>">
-               <button class="updateBtns" type="submit">x</button>
+               <button class="updateBtns" name="submit" value="remove" type="submit">x</button>
+             </form>
+             <form method="POST" action="<%= iscart ? '/remove-from-cart' : '/add-to-cart' %>">
+              <input type="hidden" name="productID" value="<%= product.id %>">
+              <%if(!iscart ){%>
+              <button class="btn" name="submit" value="add"> Add to Cart </button>
+              <%}else{%>
+              <p class="btn">Item in cart</p>
+              <%}%>
              </form>
              </div>
              <div class="subdiv"></div>
