@@ -25,6 +25,7 @@ module.exports = class Cart {
       fs.writeFile(wishlistFilePath, JSON.stringify(products), (err) => {
         if (!err) {
           cb();
+          console.log('hihi');
         }
       });
     });
